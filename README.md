@@ -10,15 +10,37 @@
         <h4>Verification</h4>
             <p>As mentioned in background, these are the only request that do not require a header with a valid token.</p>
             <h5>Create Account POST Request</h5>
-                <p>When there is a post request to <em>localhost:3000/public/createaccount</em>, the server expects an object with a email, username, and password.  Here is an example:</p>
+                <p>When there is a post request to <em>localhost:5000/public/createaccount</em>, the server expects an object with a email, username, and password.  Here is an example:</p>
                 <h6>
-                {<br>
-                	"password": "password",<br>
-                	"username": "testusername",<br>
-                    "email": "email@email.com"<br>
-                }
+                    {<br>
+                        "password": "password",<br>
+                        "username": "testusername",<br>
+                        "email": "email@email.com"<br>
+                    }
                 </h6>
                 <p>All passwords are entered hashed and salted into the database.  If the username and/or email is already in the database, it will reject the account because usernames must be unique.  When a user is successfuly added, the server will respond with the string:</p>
-                <code>'User added.'</code>
+                <h6>'User added.'</h6>
+            <h5>Sign In POST Request</h5>
+                <p>When there is a post request to <em>localhost:5000/public/signin</em>, the server expects an identifier and password to be in the body.  The identifier can be either the user's username or email.  Here is an example:</p>
+                <h6>
+                    {<br>
+                        "password": "password",<br>
+                        "identifier": "testusername@test.com"<br>
+                    }
+                </h6>
+                <p>If the sign-in is in the database (passwords are stored as hashes with salt) i.e. valid, the server will respond with a userObject.  For example</p>
+                <h6>
+                    {<br>
+                        "id": 10,<br>
+                        "username": "sampleuser",<br>
+                        "email": "testusername@test.com",<br>
+                        "thumbnail": "images/thumbnails/sampleuser",<br>
+                        "location": "Atlanta, GA",<br>
+                        "Description": "I love walking tours!",<br>
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUzODQ0NTksImV4cCI6MTUyNTk4OTI1OX0.bXSEEFnDKKSp56ECdgmzde7PRCoCtBSNu-M4B5hT_Bc"
+                    } 
+                </h6>
+                <p>Else, the server will respond with the string:</p>
+                <h6>'Invalid identifier and/or password.'</h6>
     <h3>PUT Requests</h3>
     <h3>DELETE Requests</h3>
