@@ -52,7 +52,7 @@ let createAccount = (req, res) => {
     saltAndHashPassword(password)
     .then(hashedPassword => {
         createAccountInDb(email, username, hashedPassword)
-        .then(res.send('User added.'));
+        .then(data => res.send('User added.'));
     })
 }
 
