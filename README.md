@@ -5,11 +5,9 @@
     <p>DB_PATH=postgres://<strong>{insert_username}</strong>@localhost:5432/pc</p>
     <p>SIGNATURE=<strong>{insert_any_password}</strong></p>
 <h2>RESTful API Requests</h2>
-    <h3>GET Requests</h3>
-    <h3>POST Requests</h3>
-        <h4>Verification</h4>
-            <p>As mentioned in background, these are the only request that do not require a header with a valid token.</p>
-            <h5>Create Account POST Request</h5>
+    <h3>Verification</h3>
+        <p>As mentioned in background, these are the only request that do not require a header with a valid token.</p>
+            <h4>Create Account POST Request</h4>
                 <p>When there is a post request to <em>localhost:5000/public/createaccount</em>, the server expects an object with a email, username, and password.  Here is an example:</p>
                 <h6>
                     {<br>
@@ -20,7 +18,7 @@
                 </h6>
                 <p>All passwords are entered hashed and salted into the database.  If the username and/or email is already in the database, it will reject the account because usernames must be unique.  When a user is successfuly added, the server will respond with the string:</p>
                 <h6>'User added.'</h6>
-            <h5>Sign In POST Request</h5>
+            <h4>Sign In POST Request</h4>
                 <p>When there is a post request to <em>localhost:5000/public/signin</em>, the server expects an identifier and password to be in the body.  The identifier can be either the user's username or email.  Here is an example:</p>
                 <h6>
                     {<br>
@@ -42,5 +40,7 @@
                 </h6>
                 <p>Else, the server will respond with the string:</p>
                 <h6>'Invalid identifier and/or password.'</h6>
+    <h3>GET Requests</h3>
+    <h3>POST Requests</h3>
     <h3>PUT Requests</h3>
     <h3>DELETE Requests</h3>
