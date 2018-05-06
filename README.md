@@ -13,7 +13,7 @@
                 <p>When there is a post request to <em>localhost:3000/public/createaccount</em>, the server expects an object with a email, username, and password.  Here is an example:</p>
                 <h6>
                 {<br>
-                	%s%s"password": "password",<br>
+                	"password": "password",<br>
                 	"username": "testusername",<br>
                     "email": "email@email.com"<br>
                 }
