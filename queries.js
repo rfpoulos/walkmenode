@@ -2,7 +2,7 @@ require('dotenv').config()
 const pg = require('pg-promise')();
 const db = pg(process.env.DB_PATH);
 
-let userByUsername = (identifier) =>
+let userByIdentifier = (identifier) =>
     db.query(`
         SELECT * FROM users
         WHERE username = '${identifier}'
@@ -16,6 +16,6 @@ let createAccountInDb = (email, username, password) =>
     `);
 
 module.exports = {
-    userByUsername,
+    userByIdentifier,
     createAccountInDb
 }
