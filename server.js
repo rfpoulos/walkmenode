@@ -9,7 +9,7 @@ const { postTokens, createAccount, checkToken } = require('./authorization');
 
 router.post('/signin', postTokens);
 router.post('/createaccount', createAccount);
-// router.use('/', checkToken, api);
+router.use('/', checkToken, api);
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
