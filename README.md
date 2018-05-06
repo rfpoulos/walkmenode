@@ -11,12 +11,12 @@
             <p>As mentioned in background, these are the only request that do not require a header with a valid token.</p>
             <h5>Create Account POST Request</h5>
                 <p>When there is a post request to <em>localhost:3000/public/createaccount</em>, the server expects an object with a email, username, and password.  Here is an example:</p>
-                <console>{
+                <code>{
                 	"password": "password",
                 	"username": "testusername",
                     "email": "email@email.com"
                     }
-                </console>
+                </code>
                 <p>All passwords are entered hashed and salted into the database.  If the username and/or email is already in the database, it will reject the account because usernames must be unique.  When a user is successfuly added, the server will respond with the string:</p>
                 <h6>'User added.'</h6>
     <h3>PUT Requests</h3>
