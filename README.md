@@ -13,9 +13,9 @@
                 <p>When there is a post request to <em>localhost:3000/public/createaccount</em>, the server expects an object with a email, username, and password.  Here is an example:</p>
                 <h6>
                 {<br>
-                	"password": "password",<br>
-                	"username": "testusername",<br>
-                    "email": "email@email.com"<br>
+                	  "password": "password",<br>
+                	  "username": "testusername",<br>
+                      "email": "email@email.com"<br>
                 }
                 </h6>
                 <p>All passwords are entered hashed and salted into the database.  If the username and/or email is already in the database, it will reject the account because usernames must be unique.  When a user is successfuly added, the server will respond with the string:</p>
