@@ -36,7 +36,7 @@
                         "email": "testusername@test.com",<br>
                         "thumbnail": "images/thumbnails/sampleuser",<br>
                         "location": "Atlanta, GA",<br>
-                        "Description": "I love walking tours!",<br>
+                        "aboutme": "I love walking tours!",<br>
                         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MjUzODQ0NTksImV4cCI6MTUyNTk4OTI1OX0.bXSEEFnDKKSp56ECdgmzde7PRCoCtBSNu-M4B5hT_Bc"<br>
                     } 
                 </h6>
