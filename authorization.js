@@ -24,8 +24,7 @@ let checkToken = async (req, res, next) => {
 
 let createToken = user =>
   jwt.sign(
-    { userId: user.id,
-      role: user.role },
+    { userId: user.id},
     signature,
     { expiresIn: '7d' }
   );
