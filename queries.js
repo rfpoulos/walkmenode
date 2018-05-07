@@ -17,7 +17,8 @@ let createAccountInDb = (email, username, password) =>
 
 let userByIdFromDb = (id) =>
     db.query(`
-        SELECT * FROM users
+        SELECT id, username, email, thumbnail, aboutme 
+        FROM users
         WHERE id = ${id};
     `);
 
