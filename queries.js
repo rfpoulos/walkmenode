@@ -15,7 +15,14 @@ let createAccountInDb = (email, username, password) =>
         VALUES ('${email}', '${username}', '${password}');
     `);
 
+let userByIdFromDb = (id) =>
+    db.query(`
+        SELECT * FROM users
+        WHERE id = ${id};
+    `);
+
 module.exports = {
     userByIdentifier,
-    createAccountInDb
+    createAccountInDb,
+    userByIdFromDb
 }
