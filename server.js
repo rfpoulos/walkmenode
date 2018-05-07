@@ -6,6 +6,7 @@ const app = express();
 const router = new Router();
 
 const { postTokens, createAccount, checkToken } = require('./authorization');
+const api =  require('./api')
 
 router.post('/signin', postTokens);
 router.post('/createaccount', createAccount);

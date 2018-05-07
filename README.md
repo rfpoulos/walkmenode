@@ -41,6 +41,16 @@
             <h6>'Invalid identifier and/or password.'</h6>
 <h2>RESTful API Requests</h2>
     <h3>GET Requests</h3>
+        <h4>User</h4>
+            <p>The user id is part of the payload of the token. So to get user information, just put the token in the header.  The path is <em>localhost:5000/user</em>.  Here is a sample return object.</p>
+            <h6>
+                {<br>
+                    "id": 4,<br>
+                    "username": "test",<br>
+                    "email": "test@email.com",<br>
+                    "thumbnail": null,<br>
+                    "aboutme": null<br>
+                }
     <h3>POST Requests</h3>
     <h3>PUT Requests</h3>
     <h3>DELETE Requests</h3>
