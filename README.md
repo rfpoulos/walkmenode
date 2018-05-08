@@ -53,7 +53,7 @@
                     "aboutme": null<br>
                 }
     <h3>POST Requests</h3>
-        <h4>Profile Picture<h4>
+        <h4>Profile Picture</h4>
             <p>To update a profile picture, send a post request to <em>localhost:5000/postprofilepic</em>.  The file must come in an instance of a FormDate class with the file appended to the name 'thumbnail'.  The header cannot have a "Content-Type".  The server will respond with the path to the uploaded image.</p>
     <h3>PUT Requests</h3>
     <h3>DELETE Requests</h3>
