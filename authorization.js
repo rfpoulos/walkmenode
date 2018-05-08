@@ -48,10 +48,10 @@ let saltAndHashPassword = (password) =>
   bcrypt.hash(password, 10);
 
 let createAccount = (req, res) => {
-    let { email, username, password } = req.body;
+    let { email, username, password, aboutme } = req.body;
     saltAndHashPassword(password)
     .then(hashedPassword => {
-        createAccountInDb(email, username, hashedPassword)
+        createAccountInDb(email, username, hashedPassword, aboutme)
         .then(data => res.send('User added.'));
     })
 }
