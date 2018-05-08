@@ -11,8 +11,8 @@ let userByIdentifier = (identifier) =>
 
 let createAccountInDb = (email, username, password, aboutMe) =>
     db.query(`
-        INSERT INTO users (email, username, password, aboutme, thumbnail)
-        VALUES ('${email}', '${username}', '${password}', '${aboutMe}',
+        INSERT INTO users (email, username, password, thumbnail)
+        VALUES ('${email}', '${username}', '${password}',
                 'uploads/profile-pics/430adb90cb90097c69c7aa3ea7109daf');
     `);
 
