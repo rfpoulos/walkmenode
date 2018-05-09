@@ -7,7 +7,7 @@ const {
         userByIdFromDb,
         addProfilePicture,
         postWalkDb,
-        addWalkThumbnail
+        addWalkThumbnail,
     } = require('./queries');
 
 api.get('/user', (req, res) => {
