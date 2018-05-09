@@ -29,9 +29,24 @@ let addProfilePicture = (id, path) =>
         WHERE id = '${id}';
     `)
 
+let postWalkDb = (userId, title, description) =>
+    db.query(`
+        INSERT INTO walks (userid, title, description)
+        VALUES ('${userId}', '${title}', '${description}')
+        RETURNING *;
+    `)
+let addWalkThumbnail = (walkId, path) =>
+    db.query(`
+    UPDATE walks
+    SET thumbnail = '${path}'
+    WHERE id = '${walkId}';
+    `)
+
 module.exports = {
     userByIdentifier,
     createAccountInDb,
     userByIdFromDb,
-    addProfilePicture
+    addProfilePicture,
+    postWalkDb,
+    addWalkThumbnail,
 }
