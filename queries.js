@@ -31,15 +31,39 @@ let addProfilePicture = (id, path) =>
 
 let postWalkDb = (userId, title, description) =>
     db.query(`
-        INSERT INTO walks (userid, title, description)
-        VALUES ('${userId}', '${title}', '${description}')
+        INSERT INTO walks (userid, title, description, thumbnail)
+        VALUES ('${userId}', '${title}', '${description}', 'defaults/walkme_icon.png')
         RETURNING *;
     `)
 let addWalkThumbnail = (walkId, path) =>
     db.query(`
     UPDATE walks
     SET thumbnail = '${path}'
+    WHERE id = '${walkId}'
+    RETURNING thumbnail;
+    `)
+
+let addWalkAudio = (walkId, path) =>
+    db.query(`
+    UPDATE walks
+    SET audio = '${path}'
     WHERE id = '${walkId}';
+    `)
+
+let addWalkVideo = (walkId, path) =>
+    db.query(`
+    UPDATE walks
+    SET video = '${path}'
+    WHERE id = '${walkId}';
+    `)
+
+let addPoiDb = (walkid, title, lat, long, address, position) =>
+    db.query(`
+        INSERT INTO pois (walkid, title, lat, long, address, position, thumbnail)
+        VALUES ('${walkid}', '${title}', 
+                '${lat}', '${long}', '${address}', '${position}',
+                 'defaults/walkme_icon.png')
+        RETURNING *;
     `)
 
 module.exports = {
@@ -49,4 +73,7 @@ module.exports = {
     addProfilePicture,
     postWalkDb,
     addWalkThumbnail,
+    addWalkAudio,
+    addWalkVideo,
+    addPoiDb
 }

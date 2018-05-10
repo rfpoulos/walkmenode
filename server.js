@@ -23,7 +23,6 @@ app.use(function(req, res, next) {
   }
 });
 
-// app.use(upload.single('thumbnail'));
 router.get('/public')
 router.post('/signin', postTokens);
 router.post('/createaccount', createAccount);
