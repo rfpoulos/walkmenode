@@ -66,6 +66,13 @@ let addPoiDb = (walkid, title, lat, long, address, position) =>
         RETURNING *;
     `)
 
+let updatePoiPositionDb = (id, position) =>
+    db.query(`
+        UPDATE pois
+        SET position = ${position}
+        WHERE id = ${id};
+    `)
+
 module.exports = {
     userByIdentifier,
     createAccountInDb,
@@ -75,5 +82,6 @@ module.exports = {
     addWalkThumbnail,
     addWalkAudio,
     addWalkVideo,
-    addPoiDb
+    addPoiDb,
+    updatePoiPositionDb,
 }
