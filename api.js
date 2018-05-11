@@ -11,6 +11,7 @@ const {
         addWalkAudio,
         addWalkVideo,
         addPoiDb,
+        updatePoiPositionDb,
     } = require('./queries');
 
 api.get('/user', (req, res) => {
@@ -68,5 +69,11 @@ api.post('/postpoi', (req, res) => {
     .then(data => res.send(data[0]));
 });
 
+api.post('/updatepoipositions', (req, res) => {
+    [firstPoi, secondPoi] = req.body;
+    updatePoiPositionDb(firstPoi.id, firstPoi.position);
+    updatePoiPositionDb(secondPoi.id, secondPoi.position);
+    res.send('Updated');
+})
 
 module.exports = api;
