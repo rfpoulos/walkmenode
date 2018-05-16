@@ -12,6 +12,19 @@ const {
         addWalkVideo,
         addPoiDb,
         updatePoiPositionDb,
+        getWalkPoisDb,
+        removePoiDb,
+        addPoiThumbnail,
+        addPoiAudio,
+        addPoiVideo,
+        addPoiNextAudio,
+        addPoiTitle,
+        addPoiDescription,
+        addUserAboutMe,
+        addUserLocation,
+        getContributedWalksDb,
+        updateWalkLengthDb,
+        deleteWalkDb,
     } = require('./queries');
 
 api.get('/user', (req, res) => {
@@ -27,6 +40,22 @@ api.post('/postprofilepic',
     addProfilePicture(userId, 'uploads/profile-pics/' + req.file.filename);
     res.send('uploads/profile-pics/' + req.file.filename);
 });
+
+api.post('/userlocation', async (req, res) => {
+    let { userId } = req.jwt;
+    let { location } = req.body;
+    let result = await addUserLocation(userId, location);
+    delete result[0].password;
+    res.send(result[0]);
+})
+
+api.post('/useraboutme', async (req, res) => {
+    let { userId } = req.jwt;
+    let { aboutMe } = req.body;
+    let result = await addUserAboutMe(userId, aboutMe);
+    delete result[0].password;
+    res.send(result[0]);
+})
 
 api.post('/postwalk', (req, res) => {
     let { userId } = req.jwt;
@@ -69,11 +98,102 @@ api.post('/postpoi', (req, res) => {
     .then(data => res.send(data[0]));
 });
 
-api.post('/updatepoipositions', (req, res) => {
+api.post('/updatepoipositions', async (req, res) => {
     [firstPoi, secondPoi] = req.body;
-    updatePoiPositionDb(firstPoi.id, firstPoi.position);
-    updatePoiPositionDb(secondPoi.id, secondPoi.position);
-    res.send('Updated');
+    await Promise.all([updatePoiPositionDb(firstPoi.id, firstPoi.position),
+        updatePoiPositionDb(secondPoi.id, secondPoi.position)]);
+    let newList = await getWalkPoisDb(firstPoi.walkid)
+    res.send(newList);
+})
+
+api.delete('/deletepoi/:id', async (req, res) => {
+    walkId = await removePoiDb(parseInt(req.params.id));
+    id = walkId[0].walkid;
+    let updatedPois = await getWalkPoisDb(id);
+    let newPositions = updatedPois.map((element, i) => {
+        element.position = i;
+        return element;
+    })
+    await Promise.all(
+        newPositions.map(element =>
+            updatePoiPositionDb(element.id, element.position)));
+    let newList = await getWalkPoisDb(id);
+    res.send(newList);
+})
+
+api.post('/poidescription', async (req, res) => {
+    let { id, description } = req.body;
+    let updatedPoi = await addPoiDescription(id, description);
+    res.send(updatedPoi[0]);
+})
+
+api.post('/poititle', async (req, res) => {
+    let { id, title } = req.body;
+    let updatedPoi = await addPoiTitle(id, title);
+    res.send(updatedPoi[0]);
+})
+
+api.post('/postpoithumbnail', 
+        multer({ dest: 'public/uploads/poi-thumbnail'}).single('poi-thumbnail'),
+        (req, res) => {
+    let poiId = req.body.id;
+    addPoiThumbnail(poiId, 
+        'uploads/poi-thumbnail/' + req.file.filename)
+        .then(path => res.send(path[0].thumbnail));
+});
+
+api.post('/postpoiaudio', 
+        multer({ dest: 'public/uploads/poi-audio'}).single('poi-audio'),
+        (req, res) => {
+    let poiId = req.body.id;
+    addPoiAudio(poiId, 
+        'uploads/poi-audio/' + req.file.filename);
+    res.send('uploads/poi-audio/' + req.file.filename);
+});
+
+api.post('/postpoivideo', 
+        multer({ dest: 'public/uploads/poi-video'}).single('poi-video'),
+        (req, res) => {
+    let poiId = req.body.id;
+    addPoiVideo(poiId, 
+        'uploads/poi-video/' + req.file.filename);
+    res.send('uploads/poi-video/' + req.file.filename);
+});
+
+api.post('/postpoinextaudio', 
+        multer({ dest: 'public/uploads/poi-next-audio'}).single('poi-next-audio'),
+        (req, res) => {
+    let poiId = req.body.id;
+    addPoiNextAudio(poiId, 
+        'uploads/poi-next-audio/' + req.file.filename);
+    res.send('uploads/poi-next-audio/' + req.file.filename);
+});
+
+api.get('/getwalkpois/:id', async (req, res) => {
+    let walkid = req.params.id;
+    let result = await getWalkPoisDb(parseInt(walkid));
+    res.send(result);
+})
+
+api.get('/getcontributedwalks', async (req, res) => {
+    let { userId } = req.jwt;
+    let results = await getContributedWalksDb(userId);
+    res.send(results);
+})
+
+api.post('/updatewalklength', async (req, res) => {
+    let { length, walkid } = req.body;
+    await updateWalkLengthDb(length, walkid);
+    res.send('Updated.')
+})
+
+api.delete('/deletewalk/:id', async (req, res) => {
+    let walkid = req.params.id;
+    let { userId } = req.jwt
+    await deleteWalkDb(walkid);
+    let results = await getContributedWalksDb(userId);
+    console.log(results);
+    res.send(results);
 })
 
 module.exports = api;
