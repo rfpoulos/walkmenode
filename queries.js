@@ -73,6 +73,172 @@ let updatePoiPositionDb = (id, position) =>
         WHERE id = ${id};
     `)
 
+let getWalkPoisDb = (walkid) =>
+    db.query(`
+        SELECT * FROM pois
+        WHERE walkid = ${walkid}
+        ORDER BY position;
+    `)
+
+let removePoiDb = (id) =>
+    db.query(`
+        DELETE FROM pois
+        WHERE id = ${id}
+        RETURNING walkid;
+    `)
+
+let addPoiThumbnail = (poiId, path) =>
+    db.query(`
+    UPDATE pois
+    SET thumbnail = '${path}'
+    WHERE id = '${poiId}'
+    RETURNING thumbnail;
+    `)
+
+let addPoiAudio = (poiId, path) =>
+    db.query(`
+    UPDATE pois
+    SET audio = '${path}'
+    WHERE id = '${poiId}';
+    `)
+
+let addPoiVideo = (poiId, path) =>
+    db.query(`
+    UPDATE pois
+    SET video = '${path}'
+    WHERE id = '${poiId}';
+    `)
+
+let addPoiNextAudio = (poiId, path) =>
+    db.query(`
+    UPDATE pois
+    SET next_audio = '${path}'
+    WHERE id = '${poiId}';
+    `)
+
+let addPoiDescription = (id, description) =>
+    db.query(`
+    UPDATE pois
+    SET description = '${description}'
+    WHERE id = '${id}'
+    RETURNING *;
+    `)
+
+let addPoiTitle = (id, title) =>
+    db.query(`
+    UPDATE pois
+    SET title = '${title}'
+    WHERE id = '${id}'
+    RETURNING *;
+    `)
+
+let addUserAboutMe = (id, aboutMe) =>
+    db.query(`
+    UPDATE users
+    SET aboutme = '${aboutMe}'
+    WHERE id = '${id}'
+    RETURNING *;
+    `)
+
+let addUserLocation = (id, location) =>
+    db.query(`
+    UPDATE users
+    SET location = '${location}'
+    WHERE id = '${id}'
+    RETURNING *;
+    `)
+
+let getContributedWalksDb = (userId) =>
+    db.query(`
+    SELECT walks.id, walks.thumbnail, walks.description,
+    length, public, walks.title, address, username,
+    users.thumbnail as guidethumbnail, lat, long
+    FROM walks
+    JOIN pois ON (pois.walkid = walks.id)
+    JOIN users ON (users.id = walks.userid)
+    WHERE userid = ${userId} AND position = 0;
+    `)
+
+let updateWalkLengthDb = (length, walkid) =>
+    db.query(`
+    UPDATE walks
+    SET length = ${length}
+    WHERE id = ${walkid};
+    `)
+
+let deleteWalkDb = (walkId) =>
+    db.query(`
+        DELETE FROM walks
+        WHERE walks.id = ${walkId} 
+    `)
+
+let updatePublicStatusDb = (walkId) =>
+    db.query(`
+    UPDATE walks
+    SET public = NOT public
+    WHERE id = ${walkId};
+    `)
+
+let getGuideOrTitleDb = (input) =>
+    db.query(`
+    SELECT title as result
+    FROM walks
+    WHERE title ILIKE '%${input}%'
+    UNION 
+    SELECT username as result
+    FROM users
+    WHERE username ILIKE '%${input}%'
+    FETCH NEXT 5 ROWS ONLY;
+    `)
+
+let getResultClickDb = (search) =>
+    db.query(`
+    SELECT walks.id, walks.thumbnail, walks.description,
+    length, public, walks.title, address, username,
+    users.thumbnail as guidethumbnail, lat, long
+    FROM walks
+    JOIN pois ON (pois.walkid = walks.id)
+    JOIN users ON (users.id = walks.userid)
+    WHERE username = '${search}' 
+    AND position = 0
+    AND public = true
+    OR walks.title = '${search}' 
+    AND position = 0
+    AND public = true;
+    `)
+
+let getResultsWithinDistance = (lat, long, milesClause, limitClause, sortBy) =>
+    db.query(`
+    SELECT * FROM (
+		SELECT walks.id, walks.thumbnail, walks.description,
+	    length, public, walks.title, address, username,
+	    users.thumbnail as guidethumbnail, lat, long,
+	    (acos(sin(radians(${lat})) * sin(radians(lat)) + cos(radians(${lat})) * 
+	    cos(radians(lat)) * cos(radians(long) - radians((${long})))) * 6371)
+	    AS distance
+	    FROM walks
+	    JOIN pois ON (pois.walkid = walks.id)
+	    JOIN users ON (users.id = walks.userid)
+	    WHERE public = true
+	    AND position = 0
+	    ) AS inner_table
+	${milesClause}
+    ORDER BY ${sortBy}
+    ${limitClause};
+    `)
+
+let getWalkDb = (id) =>
+    db.query(`
+    SELECT walks.id, walks.thumbnail, walks.description,
+    length, public, walks.title, address, username,
+    users.thumbnail as guidethumbnail, lat, long, 
+    walks.video, walks.audio
+    FROM walks
+    JOIN pois ON (pois.walkid = walks.id)
+    JOIN users ON (users.id = walks.userid)
+    WHERE walks.id = ${id}; 
+    `)
+
 module.exports = {
     userByIdentifier,
     createAccountInDb,
@@ -84,4 +250,22 @@ module.exports = {
     addWalkVideo,
     addPoiDb,
     updatePoiPositionDb,
+    getWalkPoisDb,
+    removePoiDb,
+    addPoiThumbnail,
+    addPoiAudio,
+    addPoiVideo,
+    addPoiNextAudio,
+    addPoiDescription,
+    addPoiTitle,
+    addUserAboutMe,
+    addUserLocation,
+    getContributedWalksDb,
+    updateWalkLengthDb,
+    deleteWalkDb,
+    updatePublicStatusDb,
+    getGuideOrTitleDb,
+    getResultClickDb,
+    getResultsWithinDistance,
+    getWalkDb,
 }
