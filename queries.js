@@ -171,6 +171,74 @@ let deleteWalkDb = (walkId) =>
         DELETE FROM walks
         WHERE walks.id = ${walkId} 
     `)
+
+let updatePublicStatusDb = (walkId) =>
+    db.query(`
+    UPDATE walks
+    SET public = NOT public
+    WHERE id = ${walkId};
+    `)
+
+let getGuideOrTitleDb = (input) =>
+    db.query(`
+    SELECT title as result
+    FROM walks
+    WHERE title ILIKE '%${input}%'
+    UNION 
+    SELECT username as result
+    FROM users
+    WHERE username ILIKE '%${input}%'
+    FETCH NEXT 5 ROWS ONLY;
+    `)
+
+let getResultClickDb = (search) =>
+    db.query(`
+    SELECT walks.id, walks.thumbnail, walks.description,
+    length, public, walks.title, address, username,
+    users.thumbnail as guidethumbnail, lat, long
+    FROM walks
+    JOIN pois ON (pois.walkid = walks.id)
+    JOIN users ON (users.id = walks.userid)
+    WHERE username = '${search}' 
+    AND position = 0
+    AND public = true
+    OR walks.title = '${search}' 
+    AND position = 0
+    AND public = true;
+    `)
+
+let getResultsWithinDistance = (lat, long, milesClause, limitClause, sortBy) =>
+    db.query(`
+    SELECT * FROM (
+		SELECT walks.id, walks.thumbnail, walks.description,
+	    length, public, walks.title, address, username,
+	    users.thumbnail as guidethumbnail, lat, long,
+	    (acos(sin(radians(${lat})) * sin(radians(lat)) + cos(radians(${lat})) * 
+	    cos(radians(lat)) * cos(radians(long) - radians((${long})))) * 6371)
+	    AS distance
+	    FROM walks
+	    JOIN pois ON (pois.walkid = walks.id)
+	    JOIN users ON (users.id = walks.userid)
+	    WHERE public = true
+	    AND position = 0
+	    ) AS inner_table
+	${milesClause}
+    ORDER BY ${sortBy}
+    ${limitClause};
+    `)
+
+let getWalkDb = (id) =>
+    db.query(`
+    SELECT walks.id, walks.thumbnail, walks.description,
+    length, public, walks.title, address, username,
+    users.thumbnail as guidethumbnail, lat, long, 
+    walks.video, walks.audio
+    FROM walks
+    JOIN pois ON (pois.walkid = walks.id)
+    JOIN users ON (users.id = walks.userid)
+    WHERE walks.id = ${id}; 
+    `)
+
 module.exports = {
     userByIdentifier,
     createAccountInDb,
@@ -195,4 +263,9 @@ module.exports = {
     getContributedWalksDb,
     updateWalkLengthDb,
     deleteWalkDb,
+    updatePublicStatusDb,
+    getGuideOrTitleDb,
+    getResultClickDb,
+    getResultsWithinDistance,
+    getWalkDb,
 }

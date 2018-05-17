@@ -25,6 +25,11 @@ const {
         getContributedWalksDb,
         updateWalkLengthDb,
         deleteWalkDb,
+        updatePublicStatusDb,
+        getGuideOrTitleDb,
+        getResultClickDb,
+        getResultsWithinDistance,
+        getWalkDb,
     } = require('./queries');
 
 api.get('/user', (req, res) => {
@@ -192,8 +197,63 @@ api.delete('/deletewalk/:id', async (req, res) => {
     let { userId } = req.jwt
     await deleteWalkDb(walkid);
     let results = await getContributedWalksDb(userId);
-    console.log(results);
     res.send(results);
+})
+
+api.put('/updatepublicstatus/:id', async (req, res) => {
+    let walkId = req.params.id;
+    await updatePublicStatusDb(walkId);
+    let { userId } = req.jwt
+    let results = await getContributedWalksDb(userId);
+    res.send(results);
+})
+
+api.get('/getguideortitle/:search', async (req, res) => {
+    let search = req.params.search;
+    if (search) {
+        let results = await getGuideOrTitleDb(search);
+        if (results) {
+            res.send(results);
+        } else {
+            res.send([]);
+        }
+    } else {
+        res.send([]);
+    }
+})
+
+api.get('/getresultclick/:search', async (req, res) => {
+    let search = req.params.search;
+    let results = await getResultClickDb(search);
+    res.send(results);
+})
+
+api.get('/getresultswithinfistance/:lat/:long/:miles/:limit/:sortby', async (req, res) => {
+    let { lat, long, miles, limit, sortby } = req.params;
+    let milesClause = '';
+    if (miles !== 'all') {
+        milesClause = `WHERE distance <= ${parseFloat(miles) * 1.609344}`
+    }
+    let limitClause = '';
+    if (limit !== 'all') {
+        limitClause = `LIMIT ${limit}`
+    }
+
+    let results = await getResultsWithinDistance(
+        parseFloat(lat), 
+        parseFloat(long), 
+        milesClause, 
+        limitClause,
+        sortby
+    );
+    res.send(results);
+})
+
+api.get('/getwalk/:id', async (req, res) => {
+    let { id } = req.params;
+    let results = await Promise.all([getWalkDb(id), getWalkPoisDb(id)]);
+    [resultArray, pois] = results;
+    res.send({ walk: resultArray[0], pois })
 })
 
 module.exports = api;
