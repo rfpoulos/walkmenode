@@ -1,6 +1,6 @@
 # walkmenode
+<a href="https://github.com/rfpoulos/walkmereact">See the front end code here (front-end is written in React-Redux)</a>
 <h2>Background</h2>
-    <a href="https://github.com/rfpoulos/walkmereact">See the front end code here (front-end is written in React-Redux)</a>
     <p>This server has exactly two post requests that do not require the front end to send a valid token in the header of their request; sign in and create account.  This means that in order to use any of the primary features of the applcation, users MUST be signed in.</p>
 <h2>How to Set Up Your .env File</h2>
     <p>DB_PATH=postgres://<strong>{insert_username}</strong>@localhost:5432/pc</p>
