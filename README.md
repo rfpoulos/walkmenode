@@ -1,5 +1,5 @@
 # walkmenode
-<p><a href="https://github.com/rfpoulos/walkmereact">See the front end code here</a> (front-end is written in React-Redux).  Here is a preview of the application.</p>
+<p><a href="https://github.com/rfpoulos/walkmereact">See the front end code here</a> (front-end is written in React-Redux)</p>
 <p><a href="https://www.youtube.com/watch?v=xHo3GI9y34k&feature=youtu.be">Here is a preview of the application</a> (Takes you to youtube.com).</p>
 <h2>Background</h2>
     <p>This server has exactly two post requests that do not require the front end to send a valid token in the header of their request; sign in and create account.  This means that in order to use any of the primary features of the applcation, users MUST be signed in.</p>
