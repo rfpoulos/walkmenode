@@ -30,6 +30,7 @@ const {
         getResultClickDb,
         getResultsWithinDistance,
         getWalkDb,
+        getProfileDb,
     } = require('./queries');
 
 api.get('/user', (req, res) => {
@@ -228,7 +229,7 @@ api.get('/getresultclick/:search', async (req, res) => {
     res.send(results);
 })
 
-api.get('/getresultswithinfistance/:lat/:long/:miles/:limit/:sortby', async (req, res) => {
+api.get('/getresultswithindistance/:lat/:long/:miles/:limit/:sortby', async (req, res) => {
     let { lat, long, miles, limit, sortby } = req.params;
     let milesClause = '';
     if (miles !== 'all') {
@@ -254,6 +255,13 @@ api.get('/getwalk/:id', async (req, res) => {
     let results = await Promise.all([getWalkDb(id), getWalkPoisDb(id)]);
     [resultArray, pois] = results;
     res.send({ walk: resultArray[0], pois })
+})
+
+api.get('/getprofile/:username', async (req, res) => {
+    let { username } = req.params;
+    let result = await getProfileDb(username);
+    delete result[0].password;
+    res.send(result[0]);
 })
 
 module.exports = api;

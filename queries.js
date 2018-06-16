@@ -239,6 +239,12 @@ let getWalkDb = (id) =>
     WHERE walks.id = ${id}; 
     `)
 
+let getProfileDb = (username) =>
+    db.query(`
+    SELECT * FROM users
+    WHERE username = '${username}';
+    `)
+
 module.exports = {
     userByIdentifier,
     createAccountInDb,
@@ -268,4 +274,5 @@ module.exports = {
     getResultClickDb,
     getResultsWithinDistance,
     getWalkDb,
+    getProfileDb,
 }
