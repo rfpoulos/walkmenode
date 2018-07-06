@@ -1,6 +1,9 @@
 # walkmenode
+<p>See a preview here</p>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=xHo3GI9y34k
+" target="_blank"><img src="http://img.youtube.com/vi/xHo3GI9y34k/0.jpg" 
+alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 <p><a href="https://github.com/rfpoulos/walkmereact">See the front end code here</a> (front-end is written in React-Redux)</p>
-<p><a href="https://www.youtube.com/watch?v=xHo3GI9y34k&feature=youtu.be">Here is a preview of the application</a> (Takes you to youtube.com).</p>
 <h2>Background</h2>
     <p>This server has exactly two post requests that do not require the front end to send a valid token in the header of their request; sign in and create account.  This means that in order to use any of the primary features of the applcation, users MUST be signed in.</p>
 <h2>How to Set Up Your .env File</h2>
