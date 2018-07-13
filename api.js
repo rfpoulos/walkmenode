@@ -33,10 +33,14 @@ const {
         getProfileDb,
     } = require('./queries');
 
-api.get('/user', (req, res) => {
+api.get('/user', async (req, res) => {
     let { userId } = req.jwt;
-    userByIdFromDb(userId)
-    .then(data => res.send(data[0]));
+    try {
+        let userData = await userByIdFromDb(userId)
+        res.send(userData[0])
+    } catch (err) {
+        res.status(400);
+    }
 });
 
 api.post('/postprofilepic', 
