@@ -233,8 +233,8 @@ api.get('/getresultclick/:search', async (req, res) => {
     res.send(results);
 })
 
-api.get('/getresultswithindistance/:lat/:long/:miles/:limit/:sortby', async (req, res) => {
-    let { lat, long, miles, limit, sortby } = req.params;
+api.get('/getresultswithindistance/:lat/:lng/:miles/:limit/:sortBy', async (req, res) => {
+    let { lat, lng, miles, limit, sortBy } = req.params;
     let milesClause = '';
     if (miles !== 'all') {
         milesClause = `WHERE distance <= ${parseFloat(miles) * 1.609344}`
@@ -246,10 +246,10 @@ api.get('/getresultswithindistance/:lat/:long/:miles/:limit/:sortby', async (req
 
     let results = await getResultsWithinDistance(
         parseFloat(lat), 
-        parseFloat(long), 
+        parseFloat(lng), 
         milesClause, 
         limitClause,
-        sortby
+        sortBy
     );
     res.send(results);
 })

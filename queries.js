@@ -211,7 +211,8 @@ let getResultsWithinDistance = (lat, long, milesClause, limitClause, sortBy) =>
     db.query(`
     SELECT * FROM (
 		SELECT walks.id, walks.thumbnail, walks.description,
-	    length, public, walks.title, address, username,
+        length, public, walks.title, address, username,
+        walks.audio, walks.video, pois.audio as poiaudio, pois.video as poivideo,
 	    users.thumbnail as guidethumbnail, lat, long,
 	    (acos(sin(radians(${lat})) * sin(radians(lat)) + cos(radians(${lat})) * 
 	    cos(radians(lat)) * cos(radians(long) - radians((${long})))) * 6371)
