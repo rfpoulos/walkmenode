@@ -207,26 +207,32 @@ let getResultClickDb = (search) =>
     AND public = true;
     `)
 
-let getResultsWithinDistance = (lat, long, milesClause, limitClause, sortBy) =>
+let getResultsWithinDistance = (lat, lng, milesClause, sortBy, limit) =>
     db.query(`
     SELECT * FROM (
-		SELECT walks.id, walks.thumbnail, walks.description,
-        length, public, walks.title, address, username,
-        walks.audio, walks.video, pois.audio as poiaudio, pois.video as poivideo,
-	    users.thumbnail as guidethumbnail, lat, long,
-	    (acos(sin(radians(${lat})) * sin(radians(lat)) + cos(radians(${lat})) * 
-	    cos(radians(lat)) * cos(radians(long) - radians((${long})))) * 6371)
-	    AS distance
-	    FROM walks
-	    JOIN pois ON (pois.walkid = walks.id)
-	    JOIN users ON (users.id = walks.userid)
-	    WHERE public = true
-	    AND position = 0
-	    ) AS inner_table
-	${milesClause}
-    ORDER BY ${sortBy}
-    ${limitClause};
-    `)
+        SELECT walks.id, walks.thumbnail, walks.description, 
+        (length / 1609.334) as length, public, walks.title, address, username, 
+        pois.audio as poisaudio, pois.video as poisvideo, 
+        users.thumbnail as guidethumbnail, lat, long, 
+        (acos(sin(radians($1)) * sin(radians(lat)) + 
+        cos(radians($1)) * cos(radians(lat)) * 
+        cos(radians(long) - radians(($2)))) * 6371)  
+        AS distance, AVG(rating) as rating, COUNT(rating)
+        FROM walks
+        JOIN pois ON (pois.walkid = walks.id)
+        JOIN users ON (users.id = walks.userid)
+        JOIN ratings ON (walks.id = ratings.walkid)
+        WHERE public = true
+        AND position = 0
+        GROUP BY walks.id, walks.thumbnail, walks.description,
+        length, walks.title, address, username, walks.audio, 
+        walks.video, poisaudio, poisvideo, guidethumbnail, 
+        lat, long, distance
+        ) AS inner_table 
+        ${milesClause}
+        ORDER BY ${sortBy}
+        LIMIT ${limit};          
+    `, [lat, lng])
 
 let getWalkDb = (id) =>
     db.query(`

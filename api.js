@@ -237,21 +237,17 @@ api.get('/getresultswithindistance/:lat/:lng/:miles/:limit/:sortBy', async (req,
     let { lat, lng, miles, limit, sortBy } = req.params;
     let milesClause = '';
     if (miles !== 'all') {
-        milesClause = `WHERE distance <= ${parseFloat(miles) * 1.609344}`
+        milesClause = `WHERE distance <= ${parseInt(miles)}`
     }
-    let limitClause = '';
-    if (limit !== 'all') {
-        limitClause = `LIMIT ${limit}`
-    }
+        let results = await getResultsWithinDistance(
+            parseFloat(lat), 
+            parseFloat(lng), 
+            milesClause,
+            sortBy,            
+            parseInt(limit)
+        );
+        res.send(results);
 
-    let results = await getResultsWithinDistance(
-        parseFloat(lat), 
-        parseFloat(lng), 
-        milesClause, 
-        limitClause,
-        sortBy
-    );
-    res.send(results);
 })
 
 api.get('/getwalk/:id', async (req, res) => {
