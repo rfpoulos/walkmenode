@@ -237,7 +237,7 @@ api.get('/getresultswithindistance/:lat/:lng/:miles/:limit/:sortBy', async (req,
     let { lat, lng, miles, limit, sortBy } = req.params;
     let milesClause = '';
     if (miles !== 'all') {
-        milesClause = `WHERE distance <= ${parseInt(miles)}`
+        milesClause = `AND distance <= ${parseInt(miles)}`
     }
         let results = await getResultsWithinDistance(
             parseFloat(lat), 
