@@ -239,9 +239,17 @@ api.get('/getguideortitle/:search', async (req, res) => {
     }
 })
 
-api.get('/getresultclick/:search', async (req, res) => {
-    let search = req.params.search;
-    let results = await getResultClickDb(search);
+api.get('/getresultclick/:search/:lat/:lng', async (req, res) => {
+    let { 
+        search,
+        lat,
+        lng,
+    } = req.params;
+    let results = await getResultClickDb(
+        search,
+        lat,
+        lng
+    );
     res.send(results);
 })
 
