@@ -31,7 +31,19 @@ const {
         getResultsWithinDistance,
         getWalkDb,
         getProfileDb,
+        getWalkByTitle,
     } = require('./queries');
+
+api.get('/walkbytitle/:search', async (req, res) => {
+    let { search } = req.params;
+    console.log(search)
+    try {
+        let result = await getWalkByTitle(search);
+        res.send(result)
+    } catch(err) {
+        req.send([])
+    }
+})
 
 api.get('/user', async (req, res) => {
     let { userId } = req.jwt;
@@ -233,20 +245,43 @@ api.get('/getresultclick/:search', async (req, res) => {
     res.send(results);
 })
 
-api.get('/getresultswithindistance/:lat/:lng/:miles/:limit/:sortBy', async (req, res) => {
-    let { lat, lng, miles, limit, sortBy } = req.params;
+api.get('/getresultswithindistance/:lat/:lng/:miles/:limit/:sortBy/:audio/:video', 
+    async (req, res) => {
+    let {
+        lat, 
+        lng, 
+        miles, 
+        limit, 
+        sortBy,
+        audio,
+        video,
+    } = req.params;
     let milesClause = '';
     if (miles !== 'all') {
         milesClause = `AND distance <= ${parseInt(miles)}`
     }
-        let results = await getResultsWithinDistance(
-            parseFloat(lat), 
-            parseFloat(lng), 
-            milesClause,
-            sortBy,            
-            parseInt(limit)
-        );
-        res.send(results);
+    let audioVideoClause = '';
+    if (audio === 'true' && video === 'true') {
+        audioVideoClause = `HAVING (COUNT(pois.audio) + COUNT(pois.next_audio) > 0
+            OR walks.audio != NULL)
+            AND (COUNT(pois.video) > 0
+            OR walks.video != NULL)`
+    } else if (audio === 'true') {
+        audioVideoClause = `HAVING (COUNT(pois.audio) + COUNT(pois.next_audio) > 0
+            OR walks.audio != NULL)`
+    } else if (video === 'true') {
+        audioVideoClause = `HAVING (COUNT(pois.video) > 0
+            OR walks.video != NULL)`
+    }
+    let results = await getResultsWithinDistance(
+        parseFloat(lat), 
+        parseFloat(lng), 
+        milesClause,
+        sortBy,            
+        parseInt(limit),
+        audioVideoClause,
+    );
+    res.send(results);
 
 })
 

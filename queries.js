@@ -2,6 +2,12 @@ require('dotenv').config()
 const pg = require('pg-promise')();
 const db = pg(process.env.DATABASE_URL);
 
+let getWalkByTitle = (search) =>
+    db.query(`
+        SELECT * FROM walks
+        WHERE title ILIKE '%${search}%';
+    `)
+
 let userByIdentifier = (identifier) =>
     db.query(`
         SELECT * FROM users
@@ -207,7 +213,13 @@ let getResultClickDb = (search) =>
     AND public = true;
     `)
 
-let getResultsWithinDistance = (lat, lng, milesClause, sortBy, limit) =>
+let getResultsWithinDistance = (lat, 
+    lng, 
+    milesClause, 
+    sortBy, 
+    limit, 
+    audioVideoClause,
+) =>
     db.query(`
 SELECT inner_table.walkid, 
     walks.thumbnail, 
@@ -249,6 +261,7 @@ GROUP BY inner_table.walkid,
     walks.audio,
     inner_table.address, 
     distance
+${audioVideoClause}
 ORDER BY ${sortBy}
 LIMIT ${limit};
     `, [lat, lng])
@@ -301,4 +314,5 @@ module.exports = {
     getResultsWithinDistance,
     getWalkDb,
     getProfileDb,
+    getWalkByTitle,
 }
