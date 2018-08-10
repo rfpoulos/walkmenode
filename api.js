@@ -263,15 +263,15 @@ api.get('/getresultswithindistance/:lat/:lng/:miles/:limit/:sortBy/:audio/:video
     let audioVideoClause = '';
     if (audio === 'true' && video === 'true') {
         audioVideoClause = `HAVING (COUNT(pois.audio) + COUNT(pois.next_audio) > 0
-            OR walks.audio != NULL)
+            OR walks.audio IS NOT NULL)
             AND (COUNT(pois.video) > 0
-            OR walks.video != NULL)`
+            OR walks.video IS NOT NULL)`
     } else if (audio === 'true') {
         audioVideoClause = `HAVING (COUNT(pois.audio) + COUNT(pois.next_audio) > 0
-            OR walks.audio != NULL)`
+            OR walks.audio IS NOT NULL)`
     } else if (video === 'true') {
         audioVideoClause = `HAVING (COUNT(pois.video) > 0
-            OR walks.video != NULL)`
+            OR walks.video IS NOT NULL)`
     }
     let results = await getResultsWithinDistance(
         parseFloat(lat), 
