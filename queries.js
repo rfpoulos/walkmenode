@@ -193,7 +193,9 @@ let getGuideOrTitleDb = (input) =>
     UNION 
     SELECT username as result
     FROM users
+    JOIN walks ON (users.id = walks.userid)
     WHERE username ILIKE '%${input}%'
+    AND public = true
     FETCH NEXT 5 ROWS ONLY;
     `)
 
