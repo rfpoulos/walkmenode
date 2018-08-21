@@ -244,6 +244,45 @@ GROUP BY inner_table.walkid,
     distance
     ;`, [lat, lng]);
 
+let getClickNoLocDb = (search) =>
+    db.query(`
+SELECT inner_table.walkid, 
+    walks.thumbnail, 
+    walks.description, 
+    (length / 1609.334) as length, 
+    walks.title, 
+    users.thumbnail as guidethumbnail, 
+    walks.video, 
+    walks.audio,
+    inner_table.address, 
+    COUNT(pois.audio) + COUNT(pois.next_audio) as poisaudio, 
+    COUNT(pois.video) as poisvideo, 
+    AVG(rating) as ratingavg, 
+    COUNT(rating) as ratingcount
+FROM (
+    SELECT address, walkid
+    FROM pois
+    WHERE position = 0
+) as inner_table
+JOIN walks ON (inner_table.walkid = walks.id)
+JOIN users ON (walks.userid = users.id)
+JOIN ratings ON (inner_table.walkid = ratings.walkid)
+JOIN pois ON (inner_table.walkid = pois.walkid)
+WHERE public = true
+AND (walks.title = '${search}'
+OR users.username = '${search}')
+GROUP BY inner_table.walkid, 
+    walks.thumbnail, 
+    walks.description, 
+    length, 
+    public, 
+    walks.title, 
+    guidethumbnail, 
+    walks.video, 
+    walks.audio,
+    inner_table.address 
+    ;`);
+    
 let getResultsWithinDistance = (
     lat, 
     lng, 
@@ -346,4 +385,5 @@ module.exports = {
     getWalkDb,
     getProfileDb,
     getWalkByTitle,
+    getClickNoLocDb,
 }

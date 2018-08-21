@@ -32,6 +32,7 @@ const {
         getWalkDb,
         getProfileDb,
         getWalkByTitle,
+        getClickNoLocDb,
     } = require('./queries');
 
 api.get('/walkbytitle/:search', async (req, res) => {
@@ -245,12 +246,17 @@ api.get('/getresultclick/:search/:lat/:lng', async (req, res) => {
         lat,
         lng,
     } = req.params;
-    let results = await getResultClickDb(
-        search,
-        lat,
-        lng
-    );
-    res.send(results);
+    if (lat != "null") {
+        let results = await getResultClickDb(
+            search,
+            parseFloat(lat),
+            parseFloat(lng)
+        );
+        res.send(results);
+    } else {
+        let results = await getClickNoLocDb(search)
+        res.send(results);
+    }
 })
 
 api.get('/getresultswithindistance/:lat/:lng/:miles/:limit/:sortBy/:audio/:video', 
